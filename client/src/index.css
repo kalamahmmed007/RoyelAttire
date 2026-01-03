@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.nav-box {
+    @apply flex items-center gap-1 rounded border px-3 py-2 text-sm transition hover:bg-black hover:text-white;
+}
+
+.badge {
+    @apply absolute -top-2 -right-2 min-w-[18px] h-[18px] rounded-full bg-red-600 text-xs text-white flex items-center justify-center;
+}
+
+.dropdown-item {
+    @apply block px-4 py-2 hover:bg-gray-100;
+}
+
+.mobile-item {
+    @apply flex items-center gap-2 rounded px-3 py-2 hover:bg-gray-100;
+}
