@@ -1,29 +1,26 @@
 import express from 'express';
 import {
-    updateProfile,
-    updatePassword,
-    addAddress,
-    updateAddress,
-    deleteAddress,
-    addToWishlist,
-    removeFromWishlist,
-    getWishlist,
-    getUserOrders
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
 } from '../controllers/userController.js';
-import { protect } from '../middleware/auth.js';
+import { protect, admin } from '../middleware/auth.js';
+import { validate } from '../middleware/validation.js';
+import { updateUserValidator, userIdValidator } from '../validators/userValidator.js';
 
 const router = express.Router();
 
-router.use(protect);
+// Get all users - admin only
+router.get('/', protect, admin, getAllUsers);
 
-router.put('/profile', updateProfile);
-router.put('/password', updatePassword);
-router.post('/address', addAddress);
-router.put('/address/:addressId', updateAddress);
-router.delete('/address/:addressId', deleteAddress);
-router.get('/wishlist', getWishlist);
-router.post('/wishlist', addToWishlist);
-router.delete('/wishlist/:productId', removeFromWishlist);
-router.get('/orders', getUserOrders);
+// Get single user
+router.get('/:id', protect, admin, userIdValidator, validate, getUserById);
+
+// Update user
+router.put('/:id', protect, admin, updateUserValidator, validate, updateUser);
+
+// Delete user
+router.delete('/:id', protect, admin, userIdValidator, validate, deleteUser);
 
 export default router;

@@ -1,21 +1,24 @@
 import express from 'express';
 import {
-    getProducts,
-    getProduct,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-    getFeaturedProducts
+  getAllProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/auth.js';
+import { validate } from '../middleware/validation.js';
+import { productValidator, productIdValidator } from '../validators/productValidator.js';
 
 const router = express.Router();
 
-router.get('/', getProducts);
-router.get('/featured', getFeaturedProducts);
-router.get('/:id', getProduct);
-router.post('/', protect, admin, createProduct);
-router.put('/:id', protect, admin, updateProduct);
-router.delete('/:id', protect, admin, deleteProduct);
+// Public routes
+router.get('/', getAllProducts);
+router.get('/:id', productIdValidator, validate, getProductById);
+
+// Admin routes
+router.post('/', protect, admin, productValidator, validate, createProduct);
+router.put('/:id', protect, admin, productIdValidator, productValidator, validate, updateProduct);
+router.delete('/:id', protect, admin, productIdValidator, validate, deleteProduct);
 
 export default router;

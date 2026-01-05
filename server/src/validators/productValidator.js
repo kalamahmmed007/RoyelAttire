@@ -7,3 +7,7 @@ export const productValidator = [
     body('category').notEmpty().withMessage('Category is required'),
     body('stock').isNumeric().withMessage('Stock must be a number')
 ];
+
+export const productIdValidator = [
+  param('id').notEmpty().withMessage('Product ID is required').isMongoId()
+];
