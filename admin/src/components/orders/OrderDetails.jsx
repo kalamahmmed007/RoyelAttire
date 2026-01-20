@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOrderById, updateOrderStatus } from '../../redux/slices/orderSlice';
+import { getOrderById, updateOrderStatus } from '../../store/ordersSlice';
 import { 
   FiArrowLeft, FiUser, FiMapPin, FiPhone, FiMail, 
   FiPackage, FiTruck, FiCheckCircle, FiClock, FiEdit 
@@ -70,8 +70,8 @@ const OrderDetails = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="w-12 h-12 border-4 rounded-full border-primary-200 border-t-primary-500 animate-spin"></div>
+      <div className="flex h-96 items-center justify-center">
+        <div className="border-primary-200 border-t-primary-500 h-12 w-12 animate-spin rounded-full border-4"></div>
       </div>
     );
   }
@@ -93,7 +93,7 @@ const OrderDetails = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/orders')}
-            className="p-2 transition-colors rounded-lg hover:bg-gray-100"
+            className="rounded-lg p-2 transition-colors hover:bg-gray-100"
           >
             <FiArrowLeft className="text-xl" />
           </button>
@@ -109,7 +109,7 @@ const OrderDetails = () => {
 
         <button
           onClick={() => setEditingStatus(true)}
-          className="flex items-center gap-2 btn-primary"
+          className="btn-primary flex items-center gap-2"
         >
           <FiEdit />
           Update Status
@@ -151,7 +151,7 @@ const OrderDetails = () => {
 
                   {/* Line */}
                   {index < statusSteps.length - 1 && (
-                    <div className="absolute top-6 left-1/2 w-full h-0.5 -z-10">
+                    <div className="absolute left-1/2 top-6 -z-10 h-0.5 w-full">
                       <div className={clsx(
                         'h-full transition-all duration-500',
                         index < currentStatusIndex ? 'bg-success-500' : 'bg-gray-200'
@@ -169,12 +169,12 @@ const OrderDetails = () => {
       {order.status === 'cancelled' && (
         <div className="card bg-primary-50 border-primary-200">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 text-white rounded-full bg-primary-500">
+            <div className="bg-primary-500 flex h-12 w-12 items-center justify-center rounded-full text-white">
               <FiCheckCircle className="text-xl" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-primary-900">Order Cancelled</h3>
-              <p className="text-sm text-primary-700">This order has been cancelled</p>
+              <h3 className="text-primary-900 text-lg font-bold">Order Cancelled</h3>
+              <p className="text-primary-700 text-sm">This order has been cancelled</p>
             </div>
           </div>
         </div>
@@ -188,16 +188,16 @@ const OrderDetails = () => {
             <h3 className="mb-4 text-lg font-bold text-gray-900">Order Items</h3>
             <div className="space-y-4">
               {order.items?.map((item) => (
-                <div key={item._id} className="flex items-center gap-4 p-4 rounded-lg bg-gray-50">
-                  <div className="flex-shrink-0 w-20 h-20 overflow-hidden bg-white rounded-lg">
+                <div key={item._id} className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
+                  <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-white">
                     {item.product?.image ? (
                       <img
                         src={item.product.image}
                         alt={item.product.name}
-                        className="object-cover w-full h-full"
+                        className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="flex items-center justify-center w-full h-full">
+                      <div className="flex h-full w-full items-center justify-center">
                         <FiPackage className="text-2xl text-gray-400" />
                       </div>
                     )}
@@ -220,7 +220,7 @@ const OrderDetails = () => {
             </div>
 
             {/* Order Summary */}
-            <div className="pt-6 mt-6 space-y-3 border-t border-gray-200">
+            <div className="mt-6 space-y-3 border-t border-gray-200 pt-6">
               <div className="flex justify-between text-gray-700">
                 <span>Subtotal</span>
                 <span>${order.subtotal?.toFixed(2)}</span>
@@ -233,7 +233,7 @@ const OrderDetails = () => {
                 <span>Tax</span>
                 <span>${order.tax?.toFixed(2) || '0.00'}</span>
               </div>
-              <div className="flex justify-between pt-3 text-xl font-bold text-gray-900 border-t border-gray-200">
+              <div className="flex justify-between border-t border-gray-200 pt-3 text-xl font-bold text-gray-900">
                 <span>Total</span>
                 <span className="text-primary-600">${order.totalAmount?.toFixed(2)}</span>
               </div>
@@ -302,14 +302,14 @@ const OrderDetails = () => {
 
       {/* Status Update Modal */}
       {editingStatus && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="w-full max-w-md p-6 bg-white rounded-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="w-full max-w-md rounded-xl bg-white p-6">
             <h3 className="mb-4 text-xl font-bold text-gray-900">Update Order Status</h3>
             
             <select
               value={newStatus}
               onChange={(e) => setNewStatus(e.target.value)}
-              className="mb-4 input-field"
+              className="input-field mb-4"
             >
               <option value="pending">Pending</option>
               <option value="processing">Processing</option>
@@ -321,13 +321,13 @@ const OrderDetails = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setEditingStatus(false)}
-                className="flex-1 btn-outline"
+                className="btn-outline flex-1"
               >
                 Cancel
               </button>
               <button
                 onClick={handleStatusUpdate}
-                className="flex-1 btn-primary"
+                className="btn-primary flex-1"
               >
                 Update
               </button>

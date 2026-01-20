@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserById, updateUserRole } from '../../redux/slices/userSlice';
+import { getUserById, updateUserRole } from '../../redux/slices/adminUserSlice';
 import { 
   FiArrowLeft, FiUser, FiMail, FiPhone, FiMapPin, 
   FiShoppingCart, FiDollarSign, FiCalendar, FiEdit, FiShield 
@@ -61,8 +61,8 @@ const UserDetails = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="w-12 h-12 border-4 rounded-full border-primary-200 border-t-primary-500 animate-spin"></div>
+      <div className="flex h-96 items-center justify-center">
+        <div className="border-primary-200 border-t-primary-500 h-12 w-12 animate-spin rounded-full border-4"></div>
       </div>
     );
   }
@@ -103,7 +103,7 @@ const UserDetails = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/users')}
-            className="p-2 transition-colors rounded-lg hover:bg-gray-100"
+            className="rounded-lg p-2 transition-colors hover:bg-gray-100"
           >
             <FiArrowLeft className="text-xl" />
           </button>
@@ -115,7 +115,7 @@ const UserDetails = () => {
 
         <button
           onClick={() => setEditingRole(true)}
-          className="flex items-center gap-2 btn-primary"
+          className="btn-primary flex items-center gap-2"
         >
           <FiEdit />
           Update Role
@@ -152,8 +152,8 @@ const UserDetails = () => {
         <div className="space-y-6">
           {/* Profile Card */}
           <div className="card">
-            <div className="flex items-center justify-center mb-6">
-              <div className="flex items-center justify-center w-24 h-24 text-4xl font-bold rounded-full bg-primary-100 text-primary-600">
+            <div className="mb-6 flex items-center justify-center">
+              <div className="bg-primary-100 text-primary-600 flex h-24 w-24 items-center justify-center rounded-full text-4xl font-bold">
                 {user.name?.charAt(0).toUpperCase()}
               </div>
             </div>
@@ -220,9 +220,9 @@ const UserDetails = () => {
               <h3 className="mb-4 text-lg font-bold text-gray-900">Addresses</h3>
               <div className="space-y-4">
                 {user.addresses.map((address, index) => (
-                  <div key={index} className="p-3 rounded-lg bg-gray-50">
+                  <div key={index} className="rounded-lg bg-gray-50 p-3">
                     <div className="flex items-start gap-2">
-                      <FiMapPin className="flex-shrink-0 mt-1 text-gray-400" />
+                      <FiMapPin className="mt-1 flex-shrink-0 text-gray-400" />
                       <div className="text-sm text-gray-700">
                         <p>{address.street}</p>
                         <p>{address.city}, {address.state} {address.zipCode}</p>
@@ -251,10 +251,10 @@ const UserDetails = () => {
                 {userOrders.map((order) => (
                   <div
                     key={order._id}
-                    className="p-4 transition-all duration-200 border border-gray-200 rounded-lg cursor-pointer hover:border-primary-200 hover:bg-primary-50/30"
+                    className="hover:border-primary-200 hover:bg-primary-50/30 cursor-pointer rounded-lg border border-gray-200 p-4 transition-all duration-200"
                     onClick={() => navigate(`/orders/${order._id}`)}
                   >
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="mb-3 flex items-center justify-between">
                       <div>
                         <h4 className="font-semibold text-gray-900">
                           #{order.orderNumber || order._id?.slice(-8).toUpperCase()}
@@ -292,12 +292,12 @@ const UserDetails = () => {
 
       {/* Role Update Modal */}
       {editingRole && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="w-full max-w-md p-6 bg-white rounded-xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="w-full max-w-md rounded-xl bg-white p-6">
             <h3 className="mb-4 text-xl font-bold text-gray-900">Update User Role</h3>
             
             <div className="mb-4">
-              <label className="block mb-2 text-sm font-medium text-gray-700">
+              <label className="mb-2 block text-sm font-medium text-gray-700">
                 Select Role
               </label>
               <select
@@ -316,13 +316,13 @@ const UserDetails = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setEditingRole(false)}
-                className="flex-1 btn-outline"
+                className="btn-outline flex-1"
               >
                 Cancel
               </button>
               <button
                 onClick={handleRoleUpdate}
-                className="flex-1 btn-primary"
+                className="btn-primary flex-1"
               >
                 Update Role
               </button>
