@@ -12,6 +12,7 @@ const Checkout = () => {
         name: "",
         email: "",
         address: "",
+        zip:"",
     });
 
     const subtotal = items.reduce(
