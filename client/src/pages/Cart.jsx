@@ -5,6 +5,7 @@ import {
     removeItemFromCart,
     clearCart
 } from "../redux/slices/cartSlice"
+import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 
 

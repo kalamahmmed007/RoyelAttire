@@ -1,75 +1,118 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addItemToCart } from "../../redux/slices/cartSlice";
+import { addToWishlist } from "../../redux/slices/wishlistSlice";
+import toast from "react-hot-toast";
+import { ShoppingCart, Heart } from "lucide-react";
+import { motion } from "framer-motion";
 
-const LatestProducts = () => {
-  const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const carouselRef = useRef(null);
+// 🔥 Dummy Products (apatoto)
+const dummyProducts = [
+  {
+    _id: "1",
+    name: "Premium T-Shirt",
+    price: 1200,
+    image: "https://via.placeholder.com/300x300?text=T-Shirt",
+    stock: 10,
+  },
+  {
+    _id: "2",
+    name: "Stylish Hoodie",
+    price: 2200,
+    image: "https://via.placeholder.com/300x300?text=Hoodie",
+    stock: 5,
+  },
+  {
+    _id: "3",
+    name: "Denim Jacket",
+    price: 3500,
+    image: "https://via.placeholder.com/300x300?text=Jacket",
+    stock: 8,
+  },
+  {
+    _id: "4",
+    name: "Casual Sneakers",
+    price: 4200,
+    image: "https://via.placeholder.com/300x300?text=Sneakers",
+    stock: 15,
+  },
+];
 
-  // Dummy products - pinned
-  useEffect(() => {
-    const dummyProducts = [
-      { id: 1, name: "Smartphone X", price: 499, category: "Electronics", image: "https://via.placeholder.com/200x200?text=Smartphone+X" },
-      { id: 2, name: "Running Shoes", price: 89, category: "Fashion", image: "https://via.placeholder.com/200x200?text=Running+Shoes" },
-      { id: 3, name: "Leather Jacket", price: 129, category: "Fashion", image: "https://via.placeholder.com/200x200?text=Leather+Jacket" },
-      { id: 4, name: "Wireless Headphones", price: 199, category: "Electronics", image: "https://via.placeholder.com/200x200?text=Headphones" },
-      { id: 5, name: "Coffee Maker", price: 59, category: "Home & Living", image: "https://via.placeholder.com/200x200?text=Coffee+Maker" },
-      { id: 6, name: "Yoga Mat", price: 29, category: "Sports", image: "https://via.placeholder.com/200x200?text=Yoga+Mat" },
-      { id: 7, name: "Sunglasses", price: 49, category: "Fashion", image: "https://via.placeholder.com/200x200?text=Sunglasses" },
-      { id: 8, name: "Smart Watch", price: 149, category: "Electronics", image: "https://via.placeholder.com/200x200?text=Smart+Watch" },
-      { id: 9, name: "Blender", price: 39, category: "Home & Living", image: "https://via.placeholder.com/200x200?text=Blender" },
-      { id: 10, name: "Basketball", price: 25, category: "Sports", image: "https://via.placeholder.com/200x200?text=Basketball" },
-    ];
-    setProducts(dummyProducts);
-  }, []);
+const LatestProduct = () => {
+  const dispatch = useDispatch();
 
-  // Auto-slide
-  useEffect(() => {
-    const scrollContainer = carouselRef.current;
-    if (!scrollContainer) return;
+  // 🛒 Add to cart
+  const handleAddToCart = (product) => {
+    dispatch(addItemToCart({ productId: product._id, quantity: 1 }))
+      .unwrap()
+      .then(() => toast.success("Added to cart 🛒"))
+      .catch(() => toast.error("Add to cart failed"));
+  };
 
-    let scrollAmount = 0;
-    const slideWidth = 220; // width + gap of one product card
-    const interval = setInterval(() => {
-      if (scrollContainer.scrollLeft + scrollContainer.offsetWidth >= scrollContainer.scrollWidth) {
-        scrollContainer.scrollTo({ left: 0, behavior: "smooth" });
-        scrollAmount = 0;
-      } else {
-        scrollAmount += slideWidth;
-        scrollContainer.scrollTo({ left: scrollAmount, behavior: "smooth" });
-      }
-    }, 2500); // every 2.5 sec
-
-    return () => clearInterval(interval);
-  }, [products]);
-
-  const handleCategoryClick = (categoryName) => {
-    navigate(`/products?category=${categoryName}`);
+  // ❤️ Add to wishlist
+  const handleWishlist = (product) => {
+    dispatch(addToWishlist(product));
+    toast.success("Added to wishlist ❤️");
   };
 
   return (
-    <div className="my-8">
-      <div className="px-4 overflow-x-auto md:px-0" ref={carouselRef}>
-        <div className="flex gap-4">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="min-w-[200px] flex-shrink-0 cursor-pointer rounded-lg border bg-white p-4 shadow hover:shadow-lg transition"
-              onClick={() => handleCategoryClick(product.category)}
-            >
+    <div className="mx-auto max-w-7xl px-4 py-10">
+      <h2 className="mb-6 text-2xl font-bold text-gray-800">
+        🔥 Latest Products
+      </h2>
+
+      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
+        {dummyProducts.map((product) => (
+          <motion.div
+            key={product._id}
+            whileHover={{ scale: 1.05 }}
+            className="rounded-xl border bg-white p-4 shadow-sm transition"
+          >
+            {/* Image */}
+            <div className="relative">
               <img
                 src={product.image}
                 alt={product.name}
-                className="object-cover w-full h-40 rounded"
+                className="h-40 w-full rounded-lg object-cover"
               />
-              <h3 className="mt-2 text-sm font-medium text-gray-700">{product.name}</h3>
-              <p className="mt-1 text-sm text-gray-500">${product.price}</p>
+
+              {/* Wishlist */}
+              <button
+                onClick={() => handleWishlist(product)}
+                className="absolute right-2 top-2 rounded-full bg-white p-2 shadow hover:bg-gray-100"
+              >
+                <Heart size={18} className="text-red-500" />
+              </button>
             </div>
-          ))}
-        </div>
+
+            {/* Info */}
+            <div className="mt-4">
+              <h3 className="line-clamp-1 font-semibold text-gray-800">
+                {product.name}
+              </h3>
+
+              <p className="mt-1 text-lg font-bold text-green-600">
+                ৳ {product.price}
+              </p>
+
+              {product.stock === 0 && (
+                <p className="mt-1 text-sm text-red-500">Out of stock</p>
+              )}
+            </div>
+
+            {/* Add to cart */}
+            <button
+              disabled={product.stock === 0}
+              onClick={() => handleAddToCart(product)}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-black py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-400"
+            >
+              <ShoppingCart size={18} />
+              Add to Cart
+            </button>
+          </motion.div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default LatestProducts;
+export default LatestProduct;
